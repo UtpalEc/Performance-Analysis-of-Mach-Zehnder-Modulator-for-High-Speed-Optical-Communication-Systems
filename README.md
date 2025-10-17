@@ -35,4 +35,49 @@ Designed and simulated a Mach–Zehnder Modulator (MZM) in MATLAB/Simulink for o
 - Hands-on **system-level simulation** in MATLAB/Simulink  
 - Comparative study of **different optical modulation formats**  
 - Practical insights into **design challenges of photonic communication systems**  
-- Understanding of **trade-offs between BER, bandwidth, and SNR**  
+- Understanding of **trade-offs between BER, bandwidth, and SNR**
+
+- Matlab with Simulink code:-
+- % Clear workspace and command window
+clear all;
+
+% Define sampling time (ts)
+ts = 1/20e4;     % Sampling period = 1 / (sampling frequency)
+                 % Change ts for faster or slower operation
+
+% Open the Simulink model
+open_system('MZM_FM_ROF_1');
+
+% Run the Simulink simulation
+sim MZM_FM_ROF_1;
+
+% Extract time and output data from simulation
+x = [time];      % Time vector
+y = [out];       % Output signal from Simulink
+
+% Get the length of the output signal
+L = length(y);
+
+% Define the sampling rate
+Fs = 1 / ts;     % Sampling frequency
+
+% Perform FFT (Fast Fourier Transform)
+Y = fft(y, L);                 % Compute FFT of signal
+Ymag = abs(Y(1:L/2));          % Magnitude of first half
+Xf = Fs * (0:(L/2)-1) / L;     % Frequency vector
+
+% Convert magnitude to dB scale
+YdB = 20 * log10(Ymag / max(Ymag));
+
+% Plot frequency spectrum
+plot(Xf, YdB, 'LineWidth', 1.4);
+grid on;
+
+% Add title and labels
+title('MZM Output Spectrum');
+xlabel('Frequency (Hz)');
+ylabel('Amplitude (dB)');
+
+% Set axis range
+axis([0 8e9 -150 0]);   % Frequency range up to 8 GHz, amplitude -150 to 0 dB
+
