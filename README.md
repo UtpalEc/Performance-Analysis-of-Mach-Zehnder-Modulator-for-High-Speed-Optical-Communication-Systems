@@ -38,46 +38,24 @@ Designed and simulated a Mach–Zehnder Modulator (MZM) in MATLAB/Simulink for o
 - Understanding of **trade-offs between BER, bandwidth, and SNR**
 
 - Matlab with Simulink code:-
-- % Clear workspace and command window
-clear all;
-
-% Define sampling time (ts)
-ts = 1/20e4;     % Sampling period = 1 / (sampling frequency)
-                 % Change ts for faster or slower operation
-
-% Open the Simulink model
-open_system('MZM_FM_ROF_1');
-
-% Run the Simulink simulation
-sim MZM_FM_ROF_1;
-
-% Extract time and output data from simulation
-x = [time];      % Time vector
-y = [out];       % Output signal from Simulink
-
-% Get the length of the output signal
-L = length(y);
-
-% Define the sampling rate
-Fs = 1 / ts;     % Sampling frequency
-
-% Perform FFT (Fast Fourier Transform)
-Y = fft(y, L);                 % Compute FFT of signal
-Ymag = abs(Y(1:L/2));          % Magnitude of first half
-Xf = Fs * (0:(L/2)-1) / L;     % Frequency vector
-
-% Convert magnitude to dB scale
-YdB = 20 * log10(Ymag / max(Ymag));
-
-% Plot frequency spectrum
-plot(Xf, YdB, 'LineWidth', 1.4);
-grid on;
-
-% Add title and labels
-title('MZM Output Spectrum');
-xlabel('Frequency (Hz)');
-ylabel('Amplitude (dB)');
-
-% Set axis range
-axis([0 8e9 -150 0]);   % Frequency range up to 8 GHz, amplitude -150 to 0 dB
-
+- clear all
+- ts=1/20e4; %change ts for speed-up operation
+- open_system ('MZM_FM_ROF_1');
+- sim MZM_FM_ROF_1;
+- x=[time];
+- y=[out];
+- L=length(y);
+- fs=1/ts; %sampling rate
+- n=2^14;
+- yn=y(1:10000,1);
+- x1=abs(fft(yn,n)/(0.5*fs));
+- y2=x1(1:n/2);
+- p2=10*log10(y2);
+- f=(0:(n/2)-1)*fs/n;
+- plot (f,p2, 'linewidth,'1.4);
+- grid
+- title('MZM output spectrum')
+- x label ('frequency (Hz)')
+- y label ('Amplitude(dB)')
+- axis ([0 3e6 -150 0])
+  
